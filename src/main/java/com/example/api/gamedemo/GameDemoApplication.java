@@ -45,7 +45,7 @@ public class GameDemoApplication {
 		state.put("playerKey", Constants.PLAYER_1);
 
 		responseBody.setMsg(Constants.INITIALIZE);
-		responseBody.setBody(new InnerBody(null, "Player 1", "Awaiting Player 1's Move!"));
+		responseBody.setBody(new InnerBody(null, "Player 1", null));
 		System.out.println(responseBody);
 		return  responseBody;
 	}
@@ -59,7 +59,6 @@ public class GameDemoApplication {
 	public com.example.api.models.ResponseBody nodeClicked(@RequestBody Point point) {
 
 		com.example.api.models.ResponseBody responseBody = new com.example.api.models.ResponseBody();
-
 		System.out.println("NODE_CLICKED : " + point);
 
 		// If node-clicked is not started then let's start it
@@ -74,22 +73,16 @@ public class GameDemoApplication {
 		// if node-clicked event is already started but not the end point
 		if(state.containsKey(Constants.STATE_START) && !state.containsKey(Constants.STATE_END)) {
 			state.put(Constants.STATE_END, point);
-
 			Point start = (Point) state.get(Constants.STATE_START);
 			Point end = (Point) state.get(Constants.STATE_END);
-
 			Line line = new Line(start, point);
-
 			responseBody.setMsg(Constants.VALID_START_NODE);
 			responseBody.setBody(new InnerBody(line, "Player 2", "Select a second node to complete the line."));
-
 			System.out.println(responseBody);
 			return  responseBody;
 		}
 
 		// if user selected node is not adjuscent then should be INVALID_NODE
-
-
 		if(!adjuscentPoints.containsKey(point)) {
 
 			responseBody.setMsg(Constants.INVALID_END_NODE);
@@ -100,7 +93,6 @@ public class GameDemoApplication {
 
 			Point start = (Point) state.get(Constants.STATE_START);
 			Point end = (Point) state.get(Constants.STATE_END);
-
 			Line line = new Line(start, point);
 			responseBody.setMsg(Constants.VALID_START_NODE);
 			responseBody.setBody(new InnerBody(line, "Player 2", "Select a second node to complete the line."));

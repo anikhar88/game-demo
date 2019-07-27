@@ -55,7 +55,7 @@ public class InnerBody {
 
     @Override
     public String toString() {
-        return "InnerBody{" +
+        return "{" +
                 "newLine=" + newLine +
                 ", heading='" + heading + '\'' +
                 ", message='" + message + '\'' +
