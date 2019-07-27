@@ -36,27 +36,18 @@ public class GameDemoApplication {
 	}
 
 	@RequestMapping("/initialize")
-	public String initialize() {
+	public com.example.api.models.ResponseBody initialize() {
 		//state = new HashMap<>();
+		com.example.api.models.ResponseBody responseBody = new com.example.api.models.ResponseBody();
+
 		adjuscentPoints = getAdjuscentNodeService.getPoints();
 		resetMap();
 		state.put("playerKey", Constants.PLAYER_1);
 
-		System.out.println("{\\n\" +\n" +
-				"\t\t\t\t\"    \\\"msg\\\": \\\"INITIALIZE\\\",\\n\" +\n" +
-				"\t\t\t\t\"    \\\"body\\\": {\\n\" +\n" +
-				"\t\t\t\t\"\\\"newLine\\\": null,\\n\" +\n" +
-				"\t\t\t\t\"\\\"heading\\\": \\\"Player 1\\\",\\n\" +\n" +
-				"\t\t\t\t\"\\\"message\\\": \\\"Awaiting Player 1's Move\\\"\\n\" +\n" +
-				"\t\t\t\t\"} }");
-
-		return "{\n" +
-				"    \"msg\": \"INITIALIZE\",\n" +
-				"    \"body\": {\n" +
-				"\"newLine\": null,\n" +
-				"\"heading\": \"Player 1\",\n" +
-				"\"message\": \"Awaiting Player 1's Move\"\n" +
-				"} }";
+		responseBody.setMsg(Constants.INITIALIZE);
+		responseBody.setBody(new InnerBody(null, "Player 1", "Awaiting Player 1's Move!"));
+		System.out.println(responseBody);
+		return  responseBody;
 	}
 
 	private void resetMap() {
