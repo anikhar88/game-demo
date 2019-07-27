@@ -1,0 +1,88 @@
+package com.example.api.controller;
+import com.example.api.constants.Constants;
+import com.example.api.models.Point;
+import com.example.api.service.GetAdjuscentNodeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping
+public class GameController {
+
+    private static Map<String, Object> state;
+    private static Map<String, Object> pointsAlreadyMet;
+    private static Map<Point, List<Point>> adjuscentPoints;
+
+    @Autowired
+    private GetAdjuscentNodeService getAdjuscentNodeService;
+
+    static {
+        state = new HashMap<>();
+        pointsAlreadyMet = new HashMap<>();
+    }
+
+    @RequestMapping("/")
+    public String initialize() {
+        //state = new HashMap<>();
+        adjuscentPoints = getAdjuscentNodeService.getPoints();
+        resetMap();
+        return "{\n" +
+                "    \"msg\": \"INITIALIZE\",\n" +
+                "    \"body\": {\n" +
+                "\"newLine\": null,\n" +
+                "\"heading\": \"Player 1\",\n" +
+                "\"message\": \"Awaiting Player 1's Move\"\n" +
+                "} }";
+    }
+
+    private void resetMap() {
+        state.put("playerKey", Constants.PLAYER_1);
+        pointsAlreadyMet.clear();
+    }
+
+    @PostMapping("/node-clicked")
+    String nodeClicked(@RequestBody com.example.api.models.RequestBody requestBody) {
+        String response = "";
+
+        // if start node event clicked!!
+        if (!state.containsKey(Constants.STATE_START)) {
+            state.put(Constants.STATE_START, requestBody.getBody());
+        }
+
+        if (state.containsKey(Constants.STATE_START) && !state.containsKey(Constants.STATE_END)) {
+            state.put(Constants.STATE_END, requestBody.getBody());
+        }
+
+        return "{\n" +
+                "    \"msg\": \"INITIALIZE\",\n" +
+                "    \"body\": {\n" +
+                "\"newLine\": null,\n" +
+                "\"heading\": \"Player 1\",\n" +
+                "\"message\": \"Awaiting Player 1's Move\"\n" +
+                "} }";
+
+        //check if node is not adjuscent to the x and y
+       /* if (state.containsKey()) {
+            return "{\n" +
+                    "    \"msg\": \"INVALID_END_NODE\",\n" +
+                    "    \"body\": {\n" +
+                    "\"newLine\": null, \"heading\": \"Player 2\", \"message\": \"Invalid move!\"\n" +
+                    "15\n" +
+                    "} }";
+        } */
+    }
+
+    @RequestMapping("/error1")
+    String gameError() {
+        return "{\n" +
+                "    \"error\": \"Invalid type for `id`: Expected INT but got a STRING\"\n" +
+                "}";
+    }
+
+
+}
