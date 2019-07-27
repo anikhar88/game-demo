@@ -3,17 +3,23 @@ package com.example.api.models;
 import java.util.Objects;
 
 public class InnerBody {
-    private Line line;
+
+    private Line newLine;
     private String heading;
     private String message;
 
-
-    public Line getLine() {
-        return line;
+    public InnerBody(Line line, String heading, String message) {
+        this.newLine = line;
+        this.heading = heading;
+        this.message = message;
     }
 
-    public void setLine(Line line) {
-        this.line = line;
+    public Line getNewLine() {
+        return newLine;
+    }
+
+    public void setNewLine(Line newLine) {
+        this.newLine = newLine;
     }
 
     public String getHeading() {
@@ -37,13 +43,23 @@ public class InnerBody {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         InnerBody innerBody = (InnerBody) o;
-        return Objects.equals(line, innerBody.line) &&
+        return Objects.equals(newLine, innerBody.newLine) &&
                 Objects.equals(heading, innerBody.heading) &&
                 Objects.equals(message, innerBody.message);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(line, heading, message);
+        return Objects.hash(newLine, heading, message);
     }
+
+    @Override
+    public String toString() {
+        return "InnerBody{" +
+                "newLine=" + newLine +
+                ", heading='" + heading + '\'' +
+                ", message='" + message + '\'' +
+                '}';
+    }
+
 }

@@ -36,4 +36,12 @@ public class ResponseBody {
     public int hashCode() {
         return Objects.hash(msg, body);
     }
+
+    @Override
+    public String toString() {
+        return "ResponseBody{" +
+                "msg='" + msg + '\'' +
+                ", body=" + body +
+                '}';
+    }
 }

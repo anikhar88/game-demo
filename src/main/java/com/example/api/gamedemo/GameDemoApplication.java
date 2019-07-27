@@ -1,6 +1,8 @@
 package com.example.api.gamedemo;
 
 import com.example.api.constants.Constants;
+import com.example.api.models.InnerBody;
+import com.example.api.models.Line;
 import com.example.api.models.Point;
 import com.example.api.service.GetAdjuscentNodeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,25 +65,19 @@ public class GameDemoApplication {
 	}
 
 	@PostMapping("/node-clicked")
-	String nodeClicked(@RequestBody Point point) {
+	public com.example.api.models.ResponseBody nodeClicked(@RequestBody Point point) {
 
-		String response = "";
+		com.example.api.models.ResponseBody responseBody = new com.example.api.models.ResponseBody();
 
-		System.out.println("NODE_CLICKED : " + " {\n" +
-				"\"x\": "+ point.getX()+",\n" +
-				"\"y\": "+ point.getY()+" } ");
+		System.out.println("NODE_CLICKED : " + point);
 
 		// If node-clicked is not started then let's start it
 		if(!state.containsKey(Constants.STATE_START)) {
 			state.put(Constants.STATE_START, point);
-
-			return  "{\n" +
-						"    \"msg\": \"VALID_START_NODE\",\n" +
-						"    \"body\": {\n" +
-						"\"newLine\": null,\n" +
-						"\"heading\": \"Player 2\",\n" +
-						"\"message\": \"Select a second node to complete the line.\"\n" +
-						"} }";
+			responseBody.setMsg(Constants.VALID_START_NODE);
+			responseBody.setBody(new InnerBody(null, "Player 2", "Select a second node to complete the line."));
+			System.out.println(responseBody);
+			return  responseBody;
 		}
 
 		// if node-clicked event is already started but not the end point
@@ -91,68 +87,34 @@ public class GameDemoApplication {
 			Point start = (Point) state.get(Constants.STATE_START);
 			Point end = (Point) state.get(Constants.STATE_END);
 
-			System.out.println("{\n" +
-					"    \"msg\": \"VALID_END_NODE\",\n" +
-					"    \"body\": {\n" +
-					"} }\n" +
-					"\"newLine\": {\n" +
-					"    \"start\": {\n" +
-					"\"x\": "+ start.getX()+",\n" +
-					"\"y\": "+ start.getX()+" },\n" +
-					"    \"end\": {\n" +
-					"\"x\": "+ point.getX()+",\n" +
-					"\"y\": "+ point.getX()+" },\n" +
-					"},\n" +
-					"\"heading\": \"Player 1\", \"message\": null");
+			Line line = new Line(start, point);
 
+			responseBody.setMsg(Constants.VALID_START_NODE);
+			responseBody.setBody(new InnerBody(line, "Player 2", "Select a second node to complete the line."));
 
-			return "{\n" +
-					"    \"msg\": \"VALID_END_NODE\",\n" +
-					"    \"body\": {\n" +
-					"        \"newLine\": {\n" +
-					"            \"start\": {\n" +
-					"                \"x\": " + start.getX() +"\n" +
-					"                \"y\": " + start.getY()+"\n" +
-					"            },\n" +
-					"            \"end\": {\n" +
-					"                \"x\": " + point.getX() +"\n" +
- 					"                \"y\": " + point.getY()+"\n" +
-					"            }\n" +
-					"        },\n" +
-					"        \"heading\": \"Player 1\",\n" +
-					"        \"message\": null\n" +
-					"    }\n" +
-					"}";
+			System.out.println(responseBody);
+			return  responseBody;
 		}
 
 		// if user selected node is not adjuscent then should be INVALID_NODE
 
 
 		if(!adjuscentPoints.containsKey(point)) {
-			return "{\n" +
-					"    \"msg\": \"INVALID_END_NODE\",\n" +
-					"    \"body\": {\n" +
-					"\"newLine\": null, \"heading\": \"Player 2\", \"message\": \"Invalid move!\"\n" +
-					"15\n" +
-					"} }";
+
+			responseBody.setMsg(Constants.INVALID_END_NODE);
+			responseBody.setBody(new InnerBody(null, "Player 2", "Invalid move!."));
+			System.out.println(responseBody);
+			return  responseBody;
 		} else {
 
 			Point start = (Point) state.get(Constants.STATE_START);
 			Point end = (Point) state.get(Constants.STATE_END);
 
-			return "{\n" +
-					"    \"msg\": \"VALID_END_NODE\",\n" +
-					"    \"body\": {\n" +
-					"} }\n" +
-					"\"newLine\": {\n" +
-					"    \"start\": {\n" +
-					"\"x\": " + start.getX() + " ,\n" +
-					"\"y\": " + start.getY() + " },\n" +
-					"    \"end\": {\n" +
-					"        \"x\":  " + end.getX() + " ,\n" +
-					"\"y\": " + end.getY() +  " }\n" +
-					"},\n" +
-					"\"heading\": \"Player 1\", \"message\": null";
+			Line line = new Line(start, point);
+			responseBody.setMsg(Constants.VALID_START_NODE);
+			responseBody.setBody(new InnerBody(line, "Player 2", "Select a second node to complete the line."));
+			System.out.println(responseBody);
+			return responseBody;
 		}
 
 	}
